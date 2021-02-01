@@ -22,7 +22,21 @@ def captured_output():
 
 # implement this function
 def is_perfect(n):
-    pass
+    result = False
+    factors = []
+    sum = 0
+    for x in range(n):
+        if x == 0:
+            pass
+        else:
+            if n % x == 0:
+                factors.append(x)
+    for num in factors:
+        sum += num
+    if sum == n:
+        result = True
+    return result
+
 
 # (3 points)
 def test1():
@@ -40,8 +54,19 @@ def test1():
 
 # implement this function
 def multiples_of_3_and_5(n):
-    pass
-
+    mults = []
+    sum = 0
+    for num in range(n):
+        if num == 0:
+            pass
+        else:
+            if num % 3 == 0:
+                mults.append(num)
+            elif num % 5 == 0:
+                mults.append(num)
+    for numbers in mults:
+        sum += numbers
+    return sum
 # (3 points)
 def test2():
     tc = unittest.TestCase()
@@ -53,7 +78,13 @@ def test2():
 # EXERCISE 3
 #################################################################################
 def integer_right_triangles(p):
-    pass
+    triangles = []
+    pythagorean_triples = [(a,b,c) for a in range(p+1) for b in range(a) for c in range(b) if a*a == b*b + c*c]
+    for (x, y, z) in pythagorean_triples:
+        if (x + y + z) == p:
+            triangles.append((x, y, z))
+    return len(triangles)
+
 
 def test3():
     tc = unittest.TestCase()
@@ -67,7 +98,21 @@ def test3():
 
 # implement this function
 def gen_pattern(chars):
-    pass
+    result = []
+    finalLen = len('.'.join(chars[0:]+chars[len(chars)-2::-1]))
+    if len(chars) == 1:
+        print(chars)
+        return
+    else:
+        for x in reversed(range(1, len(chars))):
+            result.append('.'.join(chars[:x-1:-1]+chars[x+1:]).center(finalLen, '.'))
+        result.append('.'.join(chars[::-1]+chars[1:]))
+        for y in range(1, len(chars)):
+            result.append('.'.join(chars[:y-1:-1]+chars[y+1:]).center(finalLen, '.'))
+    for c in result:
+        print(c)
+    return
+
 
 def test4():
     tc = unittest.TestCase()
