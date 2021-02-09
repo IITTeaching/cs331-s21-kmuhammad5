@@ -34,7 +34,23 @@ ROMEO_SOLILOQUY = """
 # Implement this function
 def compute_ngrams(toks, n=2):
     """Returns an n-gram dictionary based on the provided list of tokens."""
-    pass
+    gramDict={}
+    for i in range(len(toks)-(n-1)):
+        if toks[i] in gramDict:
+            if i + n - 1 < len(toks):
+                tempListA = []
+                for k in range(n):
+                    if k >= 1:
+                        tempListA.append(toks[i + k])
+                gramDict[toks[i]].append(tuple(tempListA))
+        else:
+            if i + n - 1 < len(toks):
+                tempListB = []
+                for k in range(n):
+                    if k >= 1:
+                        tempListB.append(toks[i+k])
+            gramDict[toks[i]]=[tuple(tempListB)]
+    return gramDict
 
 def test1():
     test1_1()
@@ -92,8 +108,36 @@ def test1_2():
 # EXERCISE 2
 ################################################################################
 # Implement this function
-def gen_passage(ngram_dict, length=100):
-    pass
+def gen_passage(ngram_dict, length=10):
+    result = []
+    currentToken = random.choice(sorted(ngram_dict.keys()))
+    result.append(currentToken)
+    while len(result) <= length:
+        if currentToken not in ngram_dict:
+            currentToken = random.choice(sorted(ngram_dict.keys()))
+            result.append(currentToken)
+        #for n in ngram_dict[currentToken]:
+            #print(ngram_dict[currentToken])
+        x=random.choice(ngram_dict[currentToken])
+        for y in x:
+            result.append(y)
+            currentToken = y
+            #if len(ngram_dict[currentToken]) > 1:
+                #x = random.choice(n)
+                #result.append(x)
+                #currentToken = x
+            #else:
+                #y=random.choice(n)
+                #result.append(y)
+                #currentToken = y
+                #print(n)
+                #for k in n:
+                    #print(k)
+                    #result.append(k)
+                    #currentToken = k
+
+    return ' '.join(result[:10])
+
 
 # 50 Points
 def test2():
