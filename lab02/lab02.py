@@ -116,26 +116,10 @@ def gen_passage(ngram_dict, length=10):
         if currentToken not in ngram_dict:
             currentToken = random.choice(sorted(ngram_dict.keys()))
             result.append(currentToken)
-        #for n in ngram_dict[currentToken]:
-            #print(ngram_dict[currentToken])
         x=random.choice(ngram_dict[currentToken])
         for y in x:
             result.append(y)
             currentToken = y
-            #if len(ngram_dict[currentToken]) > 1:
-                #x = random.choice(n)
-                #result.append(x)
-                #currentToken = x
-            #else:
-                #y=random.choice(n)
-                #result.append(y)
-                #currentToken = y
-                #print(n)
-                #for k in n:
-                    #print(k)
-                    #result.append(k)
-                    #currentToken = k
-
     return ' '.join(result[:10])
 
 
