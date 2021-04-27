@@ -53,6 +53,20 @@ class HBStree:
         KeyError, if key does not exist.
         """
         # BEGIN SOLUTION
+        cur = self.get_current_root()
+        while True:
+            if cur.val == key:
+                return key
+            if key < cur.val:
+                if not cur.left:
+                    raise KeyError
+                else:
+                    cur = cur.left
+            else:
+                if not cur.right:
+                    raise KeyError
+                else:
+                    cur = cur.right
         # END SOLUTION
 
     def __contains__(self, el):
@@ -60,6 +74,15 @@ class HBStree:
         Return True if el exists in the current version of the tree.
         """
         # BEGIN SOLUTION
+        cur = self.root_versions[-1]
+        while cur:
+            if cur.val == el:
+                return True
+            elif cur.val > el:
+                cur = cur.left
+            else:
+                cur = cur.right
+        return False
         # END SOLUTION
 
     def insert(self,key):
@@ -69,11 +92,59 @@ class HBStree:
         from creating a new version.
         """
         # BEGIN SOLUTION
+        if key in self:
+            return
+        else:
+            def trickledown(root, val):
+                if not root:
+                    return HBStree.INode(val, None, None)
+                if root.val > val:
+                    return HBStree.INode(root.val, trickledown(root.left, val), root.right)
+                elif root.val < val:
+                    return HBStree.INode(root.val, root.left, trickledown(root.right, val))
+
+            if self.root_versions[-1]:
+                self.root_versions.append(trickledown(self.root_versions[-1], key))
+            else:
+                self.root_versions.append(HBStree.INode(key, None, None))
+
         # END SOLUTION
 
     def delete(self,key):
         """Delete key from the tree, creating a new version of the tree. If key does not exist in the current version of the tree, then do nothing and refrain from creating a new version."""
         # BEGIN SOLUTION
+        if key in self:
+            cur = self.root_versions[-1]
+            changes = []
+            while True:
+                if cur == None or key == cur.val:
+                    deletedNode = cur
+                    break
+                if cur.left != None and key < cur.val:
+                    changes.append([cur, -1])
+                    cur = cur.left
+                if cur.right != None and key > cur.val:
+                    changes.append([node, 1])
+                    cur = cur.right
+            p = []
+            if cur.left != None:
+                cur = cur.left
+                while cur.right != None:
+                    p.append(cur)
+                    cur = cur.right
+            Node = None
+            if len(p) != 0:
+                for index in range(len(p) - 1, 0, -1):
+                    Node = self.INode(p[index].val, p[index].left, Node)
+                Node = self.INode(cur.val, deletedNode.left, Node)
+            else:
+                Node = deletedNode.right
+            for index in range(len(changes) - 1, -1, -1):
+                if changes[index][1] == -1:
+                    Node = self.INode(changes[index][0].val, Node, changes[index][0].right)
+                else:
+                    Node = self.INode(changes[index][0].val, changes[index][0].left, Node)
+            self.root_versions.append(Node)
         # END SOLUTION
 
     @staticmethod
@@ -145,6 +216,15 @@ class HBStree:
         if timetravel < 0 or timetravel >= len(self.root_versions):
             raise IndexError(f"valid versions for time travel are 0 to {len(self.root_versions) -1}, but was {timetravel}")
         # BEGIN SOLUTION
+        def recuriter(root):
+            if root == None:
+                return
+            else:
+                yield from recuriter(root.left)
+                yield root.val
+                yield from recuriter(root.right)
+
+        yield from recuriter(self.root_versions[-timetravel - 1])
         # END SOLUTION
 
     @staticmethod
